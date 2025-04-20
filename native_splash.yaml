@@ -1,0 +1,10 @@
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  color: "#d4e4ed"
+
+  android_12:
+    color: "#ffffff"
+    image: assets/swaplogo.png
