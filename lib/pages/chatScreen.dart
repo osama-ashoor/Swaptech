@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:swaptech2/chat/chat_service.dart';
 import 'package:swaptech2/database/chatscreen_logic.dart';
 import 'package:swaptech2/database/database.dart';
 import 'package:swaptech2/handling%20notifications/notification.dart';
@@ -292,16 +293,26 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   );
                 } else {
-                  return BubbleSpecialThree(
-                    text: message['message'],
-                    isSender: isSender,
-                    color: isSender ? Colors.blue[900]! : Colors.grey.shade300,
-                    tail: true,
-                    textStyle: GoogleFonts.tajawal(
-                      fontSize: 16,
-                      color: isSender ? Colors.white : Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  return Column(
+                    children: [
+                      Column(
+                        children: [
+                          BubbleSpecialThree(
+                            text: message['message'],
+                            isSender: isSender,
+                            color: isSender
+                                ? Colors.blue[900]!
+                                : Colors.grey.shade300,
+                            tail: true,
+                            textStyle: GoogleFonts.tajawal(
+                              fontSize: 16,
+                              color: isSender ? Colors.white : Colors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   );
                 }
               },

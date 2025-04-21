@@ -97,9 +97,10 @@ class ChatscreenLogic with ChangeNotifier {
     });
   }
 
-  // // Function to get typing status from a chatroom
-  // Stream<DocumentSnapshot> getTypingStatus(String chatroomId) {
-  // }
+  // Function to get typing status from a chatroom
+  Stream<DocumentSnapshot> getTypingStatus(String chatroomId) {
+    return _firestore.collection('chatrooms').doc(chatroomId).snapshots();
+  }
 
   // Function to update typing status in a chatroom
   Future<void> updateTypingStatus(
