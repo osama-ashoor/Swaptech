@@ -42,110 +42,121 @@ class _RequestpageState extends State<Requestpage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => StatefulBuilder(
-                builder: (context, setState) => Directionality(
-                  textDirection: ui.TextDirection.rtl,
-                  child: AlertDialog(
-                    title: Text(
-                      "هل تريد حذف الطلب؟",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.cairo(
-                        color: Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    content: Text(
-                      "سيتم حذف الطلب بشكل نهائي و لا يمكنك أسترجاعه",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.cairo(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        child: Text(
-                          "إلغاء",
-                          style: GoogleFonts.cairo(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue[900],
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      isDeleting
-                          ? CircularProgressIndicator(
-                              color: Colors.blue[900],
-                            )
-                          : TextButton(
-                              child: Text(
-                                "نعم",
-                                style: GoogleFonts.cairo(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue[900],
-                                ),
-                              ),
-                              onPressed: () async {
-                                if (mounted) {
-                                  setState(() {
-                                    isDeleting = true;
-                                  });
-                                }
-                                await Database().deleteSwap(swapId: widget.id);
-                                if (mounted) {
-                                  if (mounted) {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  }
-                                }
-                              },
-                            ),
-                    ],
-                  ),
-                ),
-              ),
+    return FutureBuilder<Map<String, dynamic>>(
+        future: _requestData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Scaffold(
+              body: Center(
+                  child: CircularProgressIndicator(color: Colors.blue[900])),
             );
-          },
-          icon: const Icon(Icons.delete_rounded, color: Colors.red),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_forward_ios_rounded,
-                color: Colors.black),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: FutureBuilder<Map<String, dynamic>>(
-          future: _requestData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child: CircularProgressIndicator(color: Colors.blue[900]));
-            } else if (snapshot.hasError) {
-              return Center(
+          } else if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(
                 child: Text(
                   "حدث خطأ في جلب البيانات",
                   style: GoogleFonts.tajawal(fontSize: 25),
                 ),
-              );
-            }
+              ),
+            );
+          }
 
-            final swapData = snapshot.data!['swap'];
-            final otherUserData = snapshot.data!['otherUser'];
-            final currentUserData = snapshot.data!['currentUser'];
-
-            return SingleChildScrollView(
+          final swapData = snapshot.data!['swap'];
+          final otherUserData = snapshot.data!['otherUser'];
+          final currentUserData = snapshot.data!['currentUser'];
+          return Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                onPressed: swapData['status'] == "تم القبول"
+                    ? null
+                    : () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => StatefulBuilder(
+                            builder: (context, setState) => Directionality(
+                              textDirection: ui.TextDirection.rtl,
+                              child: AlertDialog(
+                                title: Text(
+                                  "هل تريد حذف الطلب؟",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.cairo(
+                                    color: Colors.red,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                content: Text(
+                                  "سيتم حذف الطلب بشكل نهائي و لا يمكنك أسترجاعه",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.cairo(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    child: Text(
+                                      "إلغاء",
+                                      style: GoogleFonts.cairo(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue[900],
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  isDeleting
+                                      ? CircularProgressIndicator(
+                                          color: Colors.blue[900],
+                                        )
+                                      : TextButton(
+                                          child: Text(
+                                            "نعم",
+                                            style: GoogleFonts.cairo(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blue[900],
+                                            ),
+                                          ),
+                                          onPressed: () async {
+                                            if (mounted) {
+                                              setState(() {
+                                                isDeleting = true;
+                                              });
+                                            }
+                                            await Database()
+                                                .deleteSwap(swapId: widget.id);
+                                            if (mounted) {
+                                              if (mounted) {
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              }
+                                            }
+                                          },
+                                        ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                icon: Icon(
+                  Icons.delete_rounded,
+                  color: swapData['status'] == "تم القبول"
+                      ? Colors.grey[400]
+                      : Colors.red,
+                ),
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_forward_ios_rounded,
+                      color: Colors.black),
+                ),
+              ],
+            ),
+            body: SafeArea(
+                child: SingleChildScrollView(
               child: Column(
                 children: [
                   Directionality(
@@ -208,73 +219,78 @@ class _RequestpageState extends State<Requestpage> {
                         ),
                       ),
                       trailing: IconButton(
-                        onPressed: () async {
-                          print(currentUserData['name']);
-                          try {
-                            await ChatscreenLogic().addChat(
-                              currentUserData['suid'],
-                              otherUserData['suid'],
-                              currentUserData['name'],
-                              otherUserData['name'],
-                              currentUserData['specialization'],
-                              otherUserData['specialization'],
-                            );
+                        onPressed: swapData['status'] == "تم القبول"
+                            ? () async {
+                                try {
+                                  await ChatscreenLogic().addChat(
+                                    currentUserData['suid'],
+                                    otherUserData['suid'],
+                                    currentUserData['name'],
+                                    otherUserData['name'],
+                                    currentUserData['specialization'],
+                                    otherUserData['specialization'],
+                                  );
 
-                            if (mounted) {
-                              String chatroomId = ChatscreenLogic()
-                                  .getChatroomId(swapData['senderId'],
-                                      swapData['receiverId']);
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  transitionDuration: const Duration(
-                                      milliseconds: 250), // مدة الانتقال
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      ChatScreen(
-                                    currentUserId: swapData['senderId'],
-                                    otherUserId: swapData['receiverId'],
-                                    chatroomId: chatroomId,
-                                    name: otherUserData['name'],
-                                    specialization:
-                                        otherUserData['specialization'],
-                                  ),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return SlideTransition(
-                                      position: Tween<Offset>(
-                                        begin: const Offset(-1.0,
-                                            0.0), // بداية خارج الشاشة من اليسار
-                                        end: Offset
-                                            .zero, // النهاية عند المكان الطبيعي
-                                      ).animate(animation),
-                                      child: child,
+                                  if (mounted) {
+                                    String chatroomId = ChatscreenLogic()
+                                        .getChatroomId(swapData['senderId'],
+                                            swapData['receiverId']);
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        transitionDuration: const Duration(
+                                            milliseconds: 250), // مدة الانتقال
+                                        pageBuilder: (context, animation,
+                                                secondaryAnimation) =>
+                                            ChatScreen(
+                                          currentUserId: swapData['senderId'],
+                                          otherUserId: swapData['receiverId'],
+                                          chatroomId: chatroomId,
+                                          name: otherUserData['name'],
+                                          specialization:
+                                              otherUserData['specialization'],
+                                        ),
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return SlideTransition(
+                                            position: Tween<Offset>(
+                                              begin: const Offset(-1.0,
+                                                  0.0), // بداية خارج الشاشة من اليسار
+                                              end: Offset
+                                                  .zero, // النهاية عند المكان الطبيعي
+                                            ).animate(animation),
+                                            child: child,
+                                          );
+                                        },
+                                      ),
                                     );
-                                  },
-                                ),
-                              );
-                            }
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                behavior: SnackBarBehavior.floating,
-                                padding: const EdgeInsets.all(15),
-                                content: Center(
-                                  child: Text(
-                                    "تحقق من اتصالك بالانترنت",
-                                    style: GoogleFonts.tajawal(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
+                                  }
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      behavior: SnackBarBehavior.floating,
+                                      padding: const EdgeInsets.all(15),
+                                      content: Center(
+                                        child: Text(
+                                          "تحقق من اتصالك بالانترنت",
+                                          style: GoogleFonts.tajawal(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      backgroundColor: Colors.red,
                                     ),
-                                  ),
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        },
-                        icon: Icon(Icons.message_rounded,
-                            color: Colors.blue[900]),
+                                  );
+                                }
+                              }
+                            : null,
+                        icon: Icon(
+                          Icons.message_rounded,
+                          color: swapData['status'] == "تم القبول"
+                              ? Colors.blue[900]
+                              : Colors.grey[400],
+                        ),
                       ),
                     ),
                   ),
@@ -313,11 +329,9 @@ class _RequestpageState extends State<Requestpage> {
                   const Divider(thickness: 2, color: Colors.grey),
                 ],
               ),
-            );
-          },
-        ),
-      ),
-    );
+            )),
+          );
+        });
   }
 }
 
