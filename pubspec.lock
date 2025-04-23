@@ -352,6 +352,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_typing_indicator:
+    dependency: "direct main"
+    description:
+      name: flutter_typing_indicator
+      sha256: a6f5582c8ebf74ceb9031068e962b6d45989f6367edfee125a09c80640fa2634
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   flutter_web_plugins:
     dependency: transitive
     description: flutter

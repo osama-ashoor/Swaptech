@@ -28,6 +28,7 @@ dependencies:
   chat_bubbles: ^1.6.0
   device_preview: ^1.2.0
   flutter_native_splash: ^2.4.4
+  flutter_typing_indicator: ^0.0.4
 
 dev_dependencies:
   flutter_test:

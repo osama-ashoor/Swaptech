@@ -9,6 +9,7 @@ import 'package:swaptech2/chat/chat_service.dart';
 import 'package:swaptech2/database/chatscreen_logic.dart';
 import 'package:swaptech2/database/database.dart';
 import 'package:swaptech2/handling%20notifications/notification.dart';
+import 'package:flutter_typing_indicator/flutter_typing_indicator.dart';
 
 class ChatScreen extends StatefulWidget {
   final String currentUserId;
@@ -87,6 +88,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
+    ChatscreenLogic().updateTypingStatus(
+      widget.chatroomId,
+      widget.currentUserId,
+      false,
+    );
     _messageController.removeListener(_handleTyping);
     _messageController.dispose();
     _isTyping.removeListener(_updateTypingStatus);
@@ -197,107 +203,128 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: ChatscreenLogic()
-            .getMessages(widget.chatroomId, widget.currentUserId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting &&
-              (snapshot.data == null)) {
-            return Skeletonizer(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 80,
-                ),
-                child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return BubbleSpecialThree(
-                        text: 'asdasdadasdasd',
-                        isSender: true,
-                        color: Colors.grey.shade300,
-                        tail: true,
-                        seen: false,
-                        sent: false,
-                        textStyle: GoogleFonts.tajawal(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                      );
-                    } else if (index % 2 == 0) {
-                      return BubbleSpecialThree(
-                        text: 'asdasdadasdasd',
-                        isSender: false,
-                        color: Colors.grey.shade300,
-                        tail: true,
-                        seen: false,
-                        sent: false,
-                        textStyle: GoogleFonts.tajawal(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                      );
-                    }
-                    return BubbleSpecialThree(
-                      text: 'asdasdadasdasd',
-                      isSender: true,
-                      color: Colors.grey.shade300,
-                      tail: true,
-                      seen: false,
-                      sent: false,
-                      textStyle: GoogleFonts.tajawal(
-                        fontSize: 16,
-                        color: Colors.black,
+      body: StreamBuilder<DocumentSnapshot>(
+          stream: ChatscreenLogic().getTypingStatus(widget.chatroomId),
+          builder: (context, typingSnapshot) {
+            if (typingSnapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return StreamBuilder<QuerySnapshot>(
+              stream: ChatscreenLogic()
+                  .getMessages(widget.chatroomId, widget.currentUserId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting &&
+                    (snapshot.data == null)) {
+                  return Skeletonizer(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 80,
                       ),
-                    );
-                  },
-                ),
-              ),
-            );
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center();
-          }
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _scrollToBottom();
-          });
-
-          return Padding(
-            padding: const EdgeInsets.only(
-              bottom: 80,
-            ),
-            child: ListView.builder(
-              controller: _scrollController,
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                final message = snapshot.data!.docs[index];
-                final isSender = message['senderId'] == widget.currentUserId;
-                final read = message['read'];
-
-                if (message['senderId'] == widget.currentUserId) {
-                  return BubbleSpecialThree(
-                    text: message['message'],
-                    isSender: isSender,
-                    color: isSender ? Colors.blue[900]! : Colors.grey.shade300,
-                    tail: true,
-                    seen: read,
-                    sent: true,
-                    textStyle: GoogleFonts.tajawal(
-                      fontSize: 16,
-                      color: isSender ? Colors.white : Colors.black,
-                      fontWeight: FontWeight.w600,
+                      child: ListView.builder(
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return BubbleSpecialThree(
+                              text: 'asdasdadasdasd',
+                              isSender: true,
+                              color: Colors.grey.shade300,
+                              tail: true,
+                              seen: false,
+                              sent: false,
+                              textStyle: GoogleFonts.tajawal(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            );
+                          } else if (index % 2 == 0) {
+                            return BubbleSpecialThree(
+                              text: 'asdasdadasdasd',
+                              isSender: false,
+                              color: Colors.grey.shade300,
+                              tail: true,
+                              seen: false,
+                              sent: false,
+                              textStyle: GoogleFonts.tajawal(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            );
+                          }
+                          return BubbleSpecialThree(
+                            text: 'asdasdadasdasd',
+                            isSender: true,
+                            color: Colors.grey.shade300,
+                            tail: true,
+                            seen: false,
+                            sent: false,
+                            textStyle: GoogleFonts.tajawal(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   );
-                } else {
-                  return Column(
-                    children: [
-                      Column(
-                        children: [
-                          BubbleSpecialThree(
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center();
+                }
+
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _scrollToBottom();
+                });
+
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 80,
+                  ),
+                  child: Expanded(
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      itemCount: snapshot.data!.docs.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == snapshot.data!.docs.length) {
+                          return typingSnapshot.data!['typingStatus']
+                                      [widget.otherUserId] ==
+                                  true
+                              ? const Padding(
+                                  padding: EdgeInsets.only(left: 15.0),
+                                  child: TypingIndicator(
+                                    dotColor: Colors.blue,
+                                    dotSize: 7.0,
+                                    dotCount: 3,
+                                  ),
+                                )
+                              : const SizedBox();
+                        }
+                        final message = snapshot.data!.docs[index];
+                        final isSender =
+                            message['senderId'] == widget.currentUserId;
+                        final read = message['read'];
+                        if (message['senderId'] == widget.currentUserId) {
+                          return BubbleSpecialThree(
+                            text: message['message'],
+                            isSender: isSender,
+                            color: isSender
+                                ? Colors.blue[900]!
+                                : Colors.grey.shade300,
+                            tail: true,
+                            seen: read,
+                            sent: true,
+                            textStyle: GoogleFonts.tajawal(
+                              fontSize: 16,
+                              color: isSender ? Colors.white : Colors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        } else {
+                          return BubbleSpecialThree(
                             text: message['message'],
                             isSender: isSender,
                             color: isSender
@@ -309,17 +336,15 @@ class _ChatScreenState extends State<ChatScreen> {
                               color: isSender ? Colors.white : Colors.black,
                               fontWeight: FontWeight.w600,
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                }
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                );
               },
-            ),
-          );
-        },
-      ),
+            );
+          }),
     );
   }
 }
