@@ -1,11 +1,10 @@
-import 'dart:async';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:swaptech2/handling%20notifications/notification.dart';
 import 'package:swaptech2/pages/Home.dart';
 import 'package:swaptech2/pages/Profile.dart';
 import 'package:swaptech2/pages/requests.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:swaptech2/pages/roadmap%20screen/roadmap.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
@@ -15,7 +14,7 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  List Pages = [Home(), Profile(), Requests()];
+  List Pages = [Home(), roadmap(), Requests(), Profile()];
   int currentIndex = 0;
 
   @override
@@ -49,14 +48,20 @@ class _MainAppState extends State<MainApp> {
             label: 'الصفحة الرئيسية',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "الملف الشخصي",
+            icon: Icon(
+              Icons.map_rounded,
+            ),
+            label: "الخطة الدراسية",
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.description_rounded,
             ),
             label: "طلبات التبديل",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "الملف الشخصي",
           ),
         ],
         selectedLabelStyle: GoogleFonts.tajawal(

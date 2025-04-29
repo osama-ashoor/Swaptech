@@ -140,10 +140,11 @@ class _HomeState extends State<Home> {
           ),
         ),
         centerTitle: true,
-        title: Text("الصفحة الرئيسية",
-            textAlign: TextAlign.center,
-            style:
-                GoogleFonts.tajawal(fontSize: 22, fontWeight: FontWeight.bold)),
+        title: Text(
+          "الصفحة الرئيسية",
+          textAlign: TextAlign.center,
+          style: GoogleFonts.tajawal(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
       ),
       body: isLoading
           ? Directionality(

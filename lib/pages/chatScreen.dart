@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:swaptech2/chat/chat_service.dart';
 import 'package:swaptech2/database/chatscreen_logic.dart';
 import 'package:swaptech2/database/database.dart';
 import 'package:swaptech2/handling%20notifications/notification.dart';
