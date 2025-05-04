@@ -1,3 +1,3 @@
-# swaptech2
+# Swaptech
 
-A new Flutter project.
+A new Flutter project for my college students to swap their specialization
