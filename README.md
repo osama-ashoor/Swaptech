@@ -1,6 +1,6 @@
 # Swaptech 🔁🎓
 
-SwapTech is a mobile application designed to help university students seamlessly swap their specializations (e.g., Programming, Networking, Control) with each other. The app allows students to submit swap requests, view compatible matches, and communicate securely through a simple and intuitive interface — all managed by admin approval.
+SwapTech is a mobile application designed to help my university students seamlessly swap their specializations (e.g., Programming, Networking, Control) with each other. The app allows students to submit swap requests, view compatible matches, and communicate securely through a simple and intuitive interface — all managed by admin approval.
 
 ⸻
 
