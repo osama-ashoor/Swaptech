@@ -59,7 +59,7 @@ Ensure Firebase is properly set up and connected to the app.
 	4.	Admin reviews and confirms valid swaps.
 	5.	Both students get notified once the swap is approved.
 
-Future Plans 🚀
+# Future Plans 🚀
 	•	AI-based smart match suggestions.
 	•	Web dashboard for admin.
 	•	Analytics for swap trends.
