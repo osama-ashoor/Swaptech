@@ -49,10 +49,10 @@ Will be used for intelligent swap match recommendations based on demand and avai
     flutter pub get
     flutter run
 
-# Ensure Firebase is properly set up and connected to the app.
+Ensure Firebase is properly set up and connected to the app.
 
 
-How It Works 🔄
+# How It Works 🔄
 	1.	Student logs in using their university ID.
 	2.	Submits a request for swapping specializations.
 	3.	App finds matching requests based on current and target specializations.
